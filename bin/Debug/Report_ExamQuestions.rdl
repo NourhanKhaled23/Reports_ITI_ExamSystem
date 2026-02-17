@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ITIExamDB">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=.;Initial Catalog=ITIExamintaionSystem;Integrated Security=True</ConnectString>
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="ExamList">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_GetAllExams</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Id"><DataField>Id</DataField></Field>
+        <Field Name="Title"><DataField>Title</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ExamQuestions">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_ExamQuestions</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@ExamId">
+            <Value>=Parameters!ExamId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="ExamId"><DataField>ExamId</DataField></Field>
+        <Field Name="ExamTitle"><DataField>ExamTitle</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+        <Field Name="DurationInMinutes"><DataField>DurationInMinutes</DataField></Field>
+        <Field Name="TotalPoints"><DataField>TotalPoints</DataField></Field>
+        <Field Name="QuestionId"><DataField>QuestionId</DataField></Field>
+        <Field Name="QuestionNumber"><DataField>QuestionNumber</DataField></Field>
+        <Field Name="QuestionText"><DataField>QuestionText</DataField></Field>
+        <Field Name="QuestionType"><DataField>QuestionType</DataField></Field>
+        <Field Name="QuestionPoints"><DataField>QuestionPoints</DataField></Field>
+        <Field Name="ChoiceId"><DataField>ChoiceId</DataField></Field>
+        <Field Name="ChoiceLetter"><DataField>ChoiceLetter</DataField></Field>
+        <Field Name="ChoiceText"><DataField>ChoiceText</DataField></Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="ExamId">
+      <DataType>Integer</DataType>
+      <Prompt>Select Exam</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>ExamList</DataSetName>
+          <ValueField>Id</ValueField>
+          <LabelField>Title</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="Title"><Top>0.1in</Top><Left>0in</Left><Height>0.4in</Height><Width>7in</Width>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>Offline Exam Paper</Value>
+              <Style><FontSize>18pt</FontSize><FontWeight>Bold</FontWeight><Color>#1e3a5f</Color></Style>
+            </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+          </Textbox>
+          <Textbox Name="ExamInfo"><Top>0.55in</Top><Left>0in</Left><Height>0.5in</Height><Width>7in</Width>
+            <Paragraphs>
+              <Paragraph><TextRuns><TextRun>
+                <Value>=First(Fields!ExamTitle.Value, "ExamQuestions") &amp; " - " &amp; First(Fields!CourseName.Value, "ExamQuestions")</Value>
+                <Style><FontSize>14pt</FontSize><FontWeight>Bold</FontWeight><Color>#4a4a4a</Color></Style>
+              </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph>
+              <Paragraph><TextRuns><TextRun>
+                <Value>="Duration: " &amp; First(Fields!DurationInMinutes.Value, "ExamQuestions") &amp; " mins | Total: " &amp; First(Fields!TotalPoints.Value, "ExamQuestions") &amp; " points"</Value>
+                <Style><FontSize>10pt</FontSize><Color>#757575</Color></Style>
+              </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Tablix Name="QuestionsTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn><Width>0.5in</Width></TablixColumn>
+                <TablixColumn><Width>4in</Width></TablixColumn>
+                <TablixColumn><Width>0.5in</Width></TablixColumn>
+                <TablixColumn><Width>0.6in</Width></TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow><Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="H1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Q#</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H2"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Question / Choices</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Type</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Points</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow><Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="C1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionNumber.Value</Value><Style><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(RowNumber(Nothing) Mod 2 = 0, "#f8f8f8", "White")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C2"><CanGrow>true</CanGrow><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionText.Value &amp; Chr(10) &amp; IIF(IsNothing(Fields!ChoiceLetter.Value), "", "   " &amp; Fields!ChoiceLetter.Value &amp; ") " &amp; Fields!ChoiceText.Value)</Value></TextRun></TextRuns></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(RowNumber(Nothing) Mod 2 = 0, "#f8f8f8", "White")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionType.Value</Value></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(RowNumber(Nothing) Mod 2 = 0, "#f8f8f8", "White")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionPoints.Value</Value></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(RowNumber(Nothing) Mod 2 = 0, "#f8f8f8", "White")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy><TablixMembers><TablixMember/><TablixMember/><TablixMember/><TablixMember/></TablixMembers></TablixColumnHierarchy>
+            <TablixRowHierarchy><TablixMembers><TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember><TablixMember><Group Name="Details"/></TablixMember></TablixMembers></TablixRowHierarchy>
+            <DataSetName>ExamQuestions</DataSetName>
+            <Top>1.2in</Top><Left>0.5in</Left><Height>0.6in</Height><Width>5.6in</Width>
+          </Tablix>
+        </ReportItems>
+        <Height>2.5in</Height>
+      </Body>
+      <Width>7.5in</Width>
+      <Page><LeftMargin>0.5in</LeftMargin><RightMargin>0.5in</RightMargin><TopMargin>0.5in</TopMargin><BottomMargin>0.5in</BottomMargin></Page>
+    </ReportSection>
+  </ReportSections>
+</Report>

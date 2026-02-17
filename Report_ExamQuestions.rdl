@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <!-- Updated Connection String to Remote DB - Force Reload -->
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ITIExamDB">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=db39078.public.databaseasp.net;Initial Catalog=db39078;User ID=db39078;Password=D#m64E=cZ-h7;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True</ConnectString>
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="ExamList">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_GetAllExams</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Id"><DataField>Id</DataField></Field>
+        <Field Name="Title"><DataField>Title</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ExamQuestions">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_ExamQuestions</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@ExamId">
+            <Value>=Parameters!ExamId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="ExamId"><DataField>ExamId</DataField></Field>
+        <Field Name="ExamTitle"><DataField>ExamTitle</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+        <Field Name="DurationInMinutes"><DataField>DurationInMinutes</DataField></Field>
+        <Field Name="TotalPoints"><DataField>TotalPoints</DataField></Field>
+        <Field Name="QuestionId"><DataField>QuestionId</DataField></Field>
+        <Field Name="QuestionNumber"><DataField>QuestionNumber</DataField></Field>
+        <Field Name="QuestionText"><DataField>QuestionText</DataField></Field>
+        <Field Name="QuestionType"><DataField>QuestionType</DataField></Field>
+        <Field Name="QuestionPoints"><DataField>QuestionPoints</DataField></Field>
+        <Field Name="ChoiceId"><DataField>ChoiceId</DataField></Field>
+        <Field Name="ChoiceLetter"><DataField>ChoiceLetter</DataField></Field>
+        <Field Name="ChoiceText"><DataField>ChoiceText</DataField></Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="ExamId">
+      <DataType>Integer</DataType>
+      <Prompt>Select Exam</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>ExamList</DataSetName>
+          <ValueField>Id</ValueField>
+          <LabelField>Title</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>ExamId</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="ITILogo">
+            <Top>0.1in</Top>
+            <Left>0in</Left>
+            <Height>0.4in</Height>
+            <Width>0.9in</Width>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>ITI</Value>
+                    <Style>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>22pt</FontSize>
+                      <FontWeight>ExtraBold</FontWeight>
+                      <Color>#800020</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+                <Color>#800020</Color>
+                <Width>2pt</Width>
+              </Border>
+              <VerticalAlign>Middle</VerticalAlign>
+            </Style>
+          </Textbox>
+          <Textbox Name="Title">
+            <Top>0.1in</Top>
+            <Left>1in</Left>
+            <Height>0.4in</Height>
+            <Width>6in</Width>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Offline Exam Paper</Value>
+                    <Style>
+                      <FontFamily>Segoe UI Light</FontFamily>
+                      <FontSize>20pt</FontSize>
+                      <Color>#333333</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          
+          <Textbox Name="ExamInfo">
+             <Top>0.6in</Top><Left>0in</Left><Height>0.3in</Height><Width>7.5in</Width>
+             <Paragraphs>
+               <Paragraph><TextRuns><TextRun>
+                 <Value>=First(Fields!ExamTitle.Value, "ExamQuestions") &amp; " - " &amp; First(Fields!CourseName.Value, "ExamQuestions")</Value>
+                 <Style><FontFamily>Segoe UI</FontFamily><FontSize>12pt</FontSize><Color>#555555</Color></Style>
+               </TextRun></TextRuns><Style><FontFamily>Segoe UI</FontFamily><TextAlign>Left</TextAlign></Style></Paragraph>
+             </Paragraphs>
+          </Textbox>
+
+          <!-- KPI Section -->
+          <Rectangle Name="KPIs">
+            <Top>1.0in</Top>
+            <Left>0in</Left>
+            <Height>0.8in</Height>
+            <Width>7.5in</Width>
+            <Style><Border><Style>None</Style></Border></Style>
+            <ReportItems>
+               <!-- KPI 1 -->
+               <Textbox Name="Lbl1">
+                 <Top>0in</Top><Left>0.5in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>DURATION</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val1">
+                 <Top>0.2in</Top><Left>0.5in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=First(Fields!DurationInMinutes.Value, "ExamQuestions") &amp; " Min"</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>24pt</FontSize><Color>#800020</Color><FontWeight>Light</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               
+               <!-- KPI 2 -->
+               <Textbox Name="Lbl2">
+                 <Top>0in</Top><Left>3in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>TOTAL POINTS</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val2">
+                 <Top>0.2in</Top><Left>3in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=First(Fields!TotalPoints.Value, "ExamQuestions")</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>24pt</FontSize><Color>#800020</Color><FontWeight>Light</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+
+               <!-- KPI 3 -->
+               <Textbox Name="Lbl3">
+                 <Top>0in</Top><Left>5.5in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>Questions</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val3">
+                 <Top>0.2in</Top><Left>5.5in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=CountDistinct(Fields!QuestionId.Value, "ExamQuestions")</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>24pt</FontSize><Color>#333333</Color><FontWeight>Light</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+            </ReportItems>
+          </Rectangle>
+
+          <Tablix Name="QuestionsTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn><Width>0.5in</Width></TablixColumn>
+                <TablixColumn><Width>4in</Width></TablixColumn>
+                <TablixColumn><Width>0.8in</Width></TablixColumn>
+                <TablixColumn><Width>0.8in</Width></TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <!-- Header -->
+                <TablixRow><Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="H1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Q#</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H2"><Paragraphs><Paragraph><TextRuns><TextRun><Value>QUESTION / CHOICES</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>TYPE</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>POINTS</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <!-- Data -->
+                <TablixRow><Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="C1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionNumber.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C2"><CanGrow>true</CanGrow><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionText.Value &amp; Chr(10) &amp; IIF(IsNothing(Fields!ChoiceLetter.Value), "", "   " &amp; Fields!ChoiceLetter.Value &amp; ") " &amp; Fields!ChoiceText.Value)</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionType.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionPoints.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy><TablixMembers><TablixMember/><TablixMember/><TablixMember/><TablixMember/></TablixMembers></TablixColumnHierarchy>
+            <TablixRowHierarchy><TablixMembers><TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember><TablixMember><Group Name="Details"/></TablixMember></TablixMembers></TablixRowHierarchy>
+            <DataSetName>ExamQuestions</DataSetName>
+            <Top>2.0in</Top><Left>0.5in</Left><Height>0.65in</Height><Width>6.1in</Width>
+          </Tablix>
+        </ReportItems>
+        <Height>3in</Height>
+      </Body>
+      <Width>7.5in</Width>
+      <Page>
+        <PageFooter>
+          <Height>0.5in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="FooterInfo">
+              <Top>0.1in</Top><Left>0in</Left><Height>0.25in</Height><Width>3.5in</Width>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Generated on " &amp; Format(Globals!ExecutionTime, "MMM dd, yyyy HH:mm")</Value>
+                      <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#888888</Color></Style>
+                    </TextRun>
+                  </TextRuns>
+                </Paragraph>
+              </Paragraphs>
+            </Textbox>
+            <Textbox Name="PageNumber">
+              <Top>0.1in</Top><Left>4in</Left><Height>0.25in</Height><Width>3.5in</Width>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+                      <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#888888</Color></Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style><TextAlign>Right</TextAlign></Style>
+                </Paragraph>
+              </Paragraphs>
+            </Textbox>
+          </ReportItems>
+          <Style><Border><Style>None</Style></Border></Style>
+        </PageFooter>
+        <LeftMargin>0.5in</LeftMargin><RightMargin>0.5in</RightMargin><TopMargin>0.5in</TopMargin><BottomMargin>0.5in</BottomMargin>
+      </Page>
+    </ReportSection>
+  </ReportSections>
+</Report>

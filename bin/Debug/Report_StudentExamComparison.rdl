@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ITIExamDB">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=.;Initial Catalog=ITIExamintaionSystem;Integrated Security=True</ConnectString>
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="StudentList">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_GetAllStudents</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Id"><DataField>Id</DataField></Field>
+        <Field Name="FullName"><DataField>FullName</DataField></Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ExamsByStudent">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_GetExamsByStudent</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@StudentId">
+            <Value>=Parameters!StudentId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="Id"><DataField>Id</DataField></Field>
+        <Field Name="Title"><DataField>Title</DataField></Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ExamComparison">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_StudentExamComparison</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@StudentId">
+            <Value>=Parameters!StudentId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ExamId">
+            <Value>=Parameters!ExamId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="StudentId"><DataField>StudentId</DataField></Field>
+        <Field Name="StudentName"><DataField>StudentName</DataField></Field>
+        <Field Name="ExamId"><DataField>ExamId</DataField></Field>
+        <Field Name="ExamTitle"><DataField>ExamTitle</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+        <Field Name="SubmittedAt"><DataField>SubmittedAt</DataField></Field>
+        <Field Name="QuestionNumber"><DataField>QuestionNumber</DataField></Field>
+        <Field Name="QuestionText"><DataField>QuestionText</DataField></Field>
+        <Field Name="QuestionType"><DataField>QuestionType</DataField></Field>
+        <Field Name="QuestionPoints"><DataField>QuestionPoints</DataField></Field>
+        <Field Name="ModelAnswerLetter"><DataField>ModelAnswerLetter</DataField></Field>
+        <Field Name="ModelAnswerText"><DataField>ModelAnswerText</DataField></Field>
+        <Field Name="StudentAnswerLetter"><DataField>StudentAnswerLetter</DataField></Field>
+        <Field Name="StudentAnswerText"><DataField>StudentAnswerText</DataField></Field>
+        <Field Name="AnswerStatus"><DataField>AnswerStatus</DataField></Field>
+        <Field Name="PointsEarned"><DataField>PointsEarned</DataField></Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="StudentId">
+      <DataType>Integer</DataType>
+      <Prompt>Select Student</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>StudentList</DataSetName>
+          <ValueField>Id</ValueField>
+          <LabelField>FullName</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="ExamId">
+      <DataType>Integer</DataType>
+      <Prompt>Select Exam</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>ExamsByStudent</DataSetName>
+          <ValueField>Id</ValueField>
+          <LabelField>Title</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="Title"><Top>0.1in</Top><Left>0in</Left><Height>0.4in</Height><Width>7.5in</Width>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>Exam Answer Comparison</Value>
+              <Style><FontSize>18pt</FontSize><FontWeight>Bold</FontWeight><Color>#1e3a5f</Color></Style>
+            </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+          </Textbox>
+          <Textbox Name="StudentExamInfo"><Top>0.55in</Top><Left>0in</Left><Height>0.5in</Height><Width>7.5in</Width>
+            <Paragraphs>
+              <Paragraph><TextRuns><TextRun>
+                <Value>=First(Fields!StudentName.Value, "ExamComparison") &amp; " - " &amp; First(Fields!ExamTitle.Value, "ExamComparison")</Value>
+                <Style><FontSize>12pt</FontSize><FontWeight>Bold</FontWeight><Color>#4a4a4a</Color></Style>
+              </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph>
+              <Paragraph><TextRuns><TextRun>
+                <Value>="Submitted: " &amp; Format(First(Fields!SubmittedAt.Value, "ExamComparison"), "dd/MM/yyyy HH:mm")</Value>
+                <Style><FontSize>10pt</FontSize><Color>#757575</Color></Style>
+              </TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph>
+            </Paragraphs>
+          </Textbox>
+          <Tablix Name="ComparisonTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn><Width>0.4in</Width></TablixColumn>
+                <TablixColumn><Width>2.5in</Width></TablixColumn>
+                <TablixColumn><Width>1.2in</Width></TablixColumn>
+                <TablixColumn><Width>1.2in</Width></TablixColumn>
+                <TablixColumn><Width>0.8in</Width></TablixColumn>
+                <TablixColumn><Width>0.6in</Width></TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow><Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="H1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Q#</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H2"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Question</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Your Answer</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Correct Answer</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H5"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Status</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H6"><Paragraphs><Paragraph><TextRuns><TextRun><Value>Points</Value><Style><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>#1e3a5f</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow><Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="C1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionNumber.Value</Value><Style><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C2"><CanGrow>true</CanGrow><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!QuestionText.Value</Value></TextRun></TextRuns></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!StudentAnswerLetter.Value &amp; ") " &amp; Fields!StudentAnswerText.Value</Value></TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!ModelAnswerLetter.Value &amp; ") " &amp; Fields!ModelAnswerText.Value</Value><Style><FontWeight>Bold</FontWeight><Color>Green</Color></Style></TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C5"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!AnswerStatus.Value</Value><Style><FontWeight>Bold</FontWeight><Color>=IIF(Fields!AnswerStatus.Value = "Correct", "Green", "Red")</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C6"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!PointsEarned.Value</Value></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><BackgroundColor>=IIF(Fields!AnswerStatus.Value = "Correct", "#e8f5e9", "#ffebee")</BackgroundColor></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy><TablixMembers><TablixMember/><TablixMember/><TablixMember/><TablixMember/><TablixMember/><TablixMember/></TablixMembers></TablixColumnHierarchy>
+            <TablixRowHierarchy><TablixMembers><TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember><TablixMember><Group Name="Details"/></TablixMember></TablixMembers></TablixRowHierarchy>
+            <DataSetName>ExamComparison</DataSetName>
+            <Top>1.2in</Top><Left>0.25in</Left><Height>0.6in</Height><Width>6.7in</Width>
+          </Tablix>
+          <Textbox Name="TotalScore"><Top>1.9in</Top><Left>4.5in</Left><Height>0.3in</Height><Width>2.45in</Width>
+            <Paragraphs><Paragraph><TextRuns><TextRun>
+              <Value>="Total Score: " &amp; Sum(Fields!PointsEarned.Value, "ExamComparison") &amp; " / " &amp; Sum(Fields!QuestionPoints.Value, "ExamComparison")</Value>
+              <Style><FontSize>12pt</FontSize><FontWeight>Bold</FontWeight><Color>#1e3a5f</Color></Style>
+            </TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+          </Textbox>
+        </ReportItems>
+        <Height>2.5in</Height>
+      </Body>
+      <Width>7.5in</Width>
+      <Page><LeftMargin>0.5in</LeftMargin><RightMargin>0.5in</RightMargin><TopMargin>0.5in</TopMargin><BottomMargin>0.5in</BottomMargin></Page>
+    </ReportSection>
+  </ReportSections>
+</Report>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ITIExamDB">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=db39078.public.databaseasp.net;Initial Catalog=db39078;User ID=db39078;Password=D#m64E=cZ-h7;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True</ConnectString>
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="StudentList">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_GetAllStudents</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Id"><DataField>Id</DataField></Field>
+        <Field Name="FullName"><DataField>FullName</DataField></Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="StudentGrades">
+      <Query>
+        <DataSourceName>ITIExamDB</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>SP_Report_StudentGrades</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@StudentId">
+            <Value>=Parameters!StudentId.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="StudentId"><DataField>StudentId</DataField></Field>
+        <Field Name="StudentName"><DataField>StudentName</DataField></Field>
+        <Field Name="CourseName"><DataField>CourseName</DataField></Field>
+        <Field Name="ExamName"><DataField>ExamName</DataField></Field>
+        <Field Name="MaxPoints"><DataField>MaxPoints</DataField></Field>
+        <Field Name="StudentScore"><DataField>StudentScore</DataField></Field>
+        <Field Name="GradePercentage"><DataField>GradePercentage</DataField></Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="StudentId">
+      <DataType>Integer</DataType>
+      <Prompt>Select Student</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>StudentList</DataSetName>
+          <ValueField>Id</ValueField>
+          <LabelField>FullName</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>StudentId</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="ITILogo">
+            <Top>0.1in</Top>
+            <Left>0in</Left>
+            <Height>0.4in</Height>
+            <Width>0.9in</Width>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>ITI</Value>
+                    <Style>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>22pt</FontSize>
+                      <FontWeight>ExtraBold</FontWeight>
+                      <Color>#800020</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+                <Color>#800020</Color>
+                <Width>2pt</Width>
+              </Border>
+              <VerticalAlign>Middle</VerticalAlign>
+            </Style>
+          </Textbox>
+          <Textbox Name="Title">
+            <Top>0.1in</Top>
+            <Left>1in</Left>
+            <Height>0.4in</Height>
+            <Width>6in</Width>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Student Grades Executive Summary</Value>
+                    <Style>
+                      <FontFamily>Segoe UI Light</FontFamily>
+                      <FontSize>20pt</FontSize>
+                      <Color>#333333</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+          </Textbox>
+          
+          <!-- KPI Section -->
+          <Rectangle Name="KPIs">
+            <Top>0.7in</Top>
+            <Left>0in</Left>
+            <Height>0.8in</Height>
+            <Width>7.5in</Width>
+            <Style><Border><Style>None</Style></Border></Style>
+            <ReportItems>
+               <!-- KPI 1 -->
+               <Textbox Name="Lbl1">
+                 <Top>0in</Top><Left>0.5in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>TOTAL EXAMS</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val1">
+                 <Top>0.2in</Top><Left>0.5in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Count(Fields!ExamName.Value, "StudentGrades")</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>24pt</FontSize><Color>#800020</Color><FontWeight>Light</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               
+               <!-- KPI 2 -->
+               <Textbox Name="Lbl2">
+                 <Top>0in</Top><Left>3in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>AVG SCORE</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val2">
+                 <Top>0.2in</Top><Left>3in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Avg(Fields!GradePercentage.Value, "StudentGrades")</Value><Style><Format>0.0</Format><FontFamily>Segoe UI</FontFamily><FontSize>24pt</FontSize><Color>#800020</Color><FontWeight>Light</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+
+               <!-- KPI 3 -->
+               <Textbox Name="Lbl3">
+                 <Top>0in</Top><Left>5.5in</Left><Height>0.2in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>PERFORMANCE</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#777777</Color><FontWeight>Bold</FontWeight></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border></Style>
+               </Textbox>
+               <Textbox Name="Val3">
+                 <Top>0.2in</Top><Left>5.5in</Left><Height>0.4in</Height><Width>1.5in</Width>
+                 <Paragraphs><Paragraph><TextRuns><TextRun><Value>=IIF(Avg(Fields!GradePercentage.Value, "StudentGrades") >= 70, "Good", "Needs Impr.")</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>14pt</FontSize><Color>#333333</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+                 <Style><Border><Style>None</Style></Border><PaddingTop>8pt</PaddingTop></Style>
+               </Textbox>
+            </ReportItems>
+          </Rectangle>
+
+          <Tablix Name="GradesTable">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn><Width>2.5in</Width></TablixColumn>
+                <TablixColumn><Width>2.5in</Width></TablixColumn>
+                <TablixColumn><Width>0.8in</Width></TablixColumn>
+                <TablixColumn><Width>0.8in</Width></TablixColumn>
+                <TablixColumn><Width>1in</Width></TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <!-- Header Row -->
+                <TablixRow><Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="H1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>COURSE</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H2"><Paragraphs><Paragraph><TextRuns><TextRun><Value>EXAM</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>MAX POINTS</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>SCORE</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="H5"><Paragraphs><Paragraph><TextRuns><TextRun><Value>GRADE %</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#800020</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#800020</BackgroundColor><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <!-- Data Row -->
+                <TablixRow><Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell><CellContents><Textbox Name="C1"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!CourseName.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C2"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!ExamName.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign><PaddingLeft>4pt</PaddingLeft></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C3"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!MaxPoints.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C4"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!StudentScore.Value</Value><Style><FontFamily>Segoe UI</FontFamily></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                    <TablixCell><CellContents><Textbox Name="C5"><Paragraphs><Paragraph><TextRuns><TextRun><Value>=Fields!GradePercentage.Value &amp; "%"</Value><Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>=Switch(Fields!GradePercentage.Value >= 85, "#1D8348", Fields!GradePercentage.Value >= 70, "#239B56", Fields!GradePercentage.Value >= 50, "#B9770E", True, "#943126")</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs><Style><Border><Color>#E0E0E0</Color><Style>Solid</Style><Width>0.5pt</Width></Border><VerticalAlign>Middle</VerticalAlign></Style></Textbox></CellContents></TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy><TablixMembers><TablixMember/><TablixMember/><TablixMember/><TablixMember/><TablixMember/></TablixMembers></TablixColumnHierarchy>
+            <TablixRowHierarchy><TablixMembers><TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember><TablixMember><Group Name="Details"/></TablixMember></TablixMembers></TablixRowHierarchy>
+            <DataSetName>StudentGrades</DataSetName>
+            <Top>1.8in</Top><Left>0.5in</Left><Height>0.7in</Height><Width>6.5in</Width>
+          </Tablix>
+        </ReportItems>
+        <Height>3in</Height>
+      </Body>
+      <Width>7.5in</Width>
+      <Page>
+        <PageFooter>
+          <Height>0.5in</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="FooterInfo">
+              <Top>0.1in</Top><Left>0in</Left><Height>0.25in</Height><Width>3.5in</Width>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Generated on " &amp; Format(Globals!ExecutionTime, "MMM dd, yyyy HH:mm")</Value>
+                      <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#888888</Color></Style>
+                    </TextRun>
+                  </TextRuns>
+                </Paragraph>
+              </Paragraphs>
+            </Textbox>
+            <Textbox Name="PageNumber">
+              <Top>0.1in</Top><Left>4in</Left><Height>0.25in</Height><Width>3.5in</Width>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Page " &amp; Globals!PageNumber &amp; " of " &amp; Globals!TotalPages</Value>
+                      <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#888888</Color></Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style><TextAlign>Right</TextAlign></Style>
+                </Paragraph>
+              </Paragraphs>
+            </Textbox>
+          </ReportItems>
+          <Style><Border><Style>None</Style></Border></Style>
+        </PageFooter>
+        <LeftMargin>0.5in</LeftMargin><RightMargin>0.5in</RightMargin><TopMargin>0.5in</TopMargin><BottomMargin>0.5in</BottomMargin>
+      </Page>
+    </ReportSection>
+  </ReportSections>
+</Report>
