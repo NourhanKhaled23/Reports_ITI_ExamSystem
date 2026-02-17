@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITI Reporting System - Complete Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo">ITI</div>
+                <div class="brand-text">
+                    <h1>ITI ExamSys</h1>
+                    <span>Reporting Documentation</span>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#reports">Reports</a>
+                <a href="#procedures">Procedures</a>
+                <a href="#deployment">Deployment</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="overview">
+        <div class="container">
+            <h1 class="hero-title">Database Reporting Documentation</h1>
+            <p class="hero-subtitle">Comprehensive documentation for ITI Examination System SSRS reports. Manage organizational structure, exams, students, and grading with robust transaction-safe operations.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Stored Procedures</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Parameterized</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="controls-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search reports and procedures...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Procedures</button>
+                <button class="filter-btn" data-filter="insert">Insert Operations</button>
+                <button class="filter-btn" data-filter="select">Select & Search</button>
+                <button class="filter-btn" data-filter="update">Update Operations</button>
+                <button class="filter-btn" data-filter="delete">Delete Operations</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section class="reports-section" id="reports">
+        <div class="container">
+            <h2 class="section-title">SSRS Reports Catalog</h2>
+            <p class="section-subtitle">Six comprehensive reports providing insights into exams, students, and organizational structure</p>
+            
+            <div class="reports-grid">
+                <!-- Report 1 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Exam Questions Report</h3>
+                        <span class="badge badge-exam">Exam</span>
+                    </div>
+                    <p class="report-file">📄 Report_ExamQuestions.rdl</p>
+                    <p class="report-desc">Displays complete question bank for selected exam including multiple-choice options, question types, and point values with KPI dashboard.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>@ExamId</code> (Integer) - Selected from dropdown</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>ExamList:</strong> SP_Report_GetAllExams</li>
+                                <li><strong>ExamQuestions:</strong> SP_Report_ExamQuestions</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>ExamTitle</span>
+                                <span>CourseName</span>
+                                <span>DurationInMinutes</span>
+                                <span>TotalPoints</span>
+                                <span>QuestionNumber</span>
+                                <span>QuestionText</span>
+                                <span>QuestionType</span>
+                                <span>QuestionPoints</span>
+                                <span>ChoiceLetter</span>
+                                <span>ChoiceText</span>
+                            </div>
+                            
+                            <h4>KPIs</h4>
+                            <ul>
+                                <li>Duration (Minutes)</li>
+                                <li>Total Points</li>
+                                <li>Question Count</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 2 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Student Grades Report</h3>
+                        <span class="badge badge-student">Student</span>
+                    </div>
+                    <p class="report-file">📄 Report_StudentGrades.rdl</p>
+                    <p class="report-desc">Comprehensive grade summary for selected student across all completed exams with color-coded performance indicators.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>@StudentId</code> (Integer) - Selected from dropdown</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>StudentList:</strong> SP_Report_GetAllStudents</li>
+                                <li><strong>StudentGrades:</strong> SP_Report_StudentGrades</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>StudentName</span>
+                                <span>CourseName</span>
+                                <span>ExamName</span>
+                                <span>MaxPoints</span>
+                                <span>StudentScore</span>
+                                <span>GradePercentage</span>
+                            </div>
+                            
+                            <h4>Color Coding</h4>
+                            <ul>
+                                <li><span style="color: #1D8348;">🟢 Green ≥85%</span> - Excellent</li>
+                                <li><span style="color: #239B56;">🟢 Light Green ≥70%</span> - Good</li>
+                                <li><span style="color: #B9770E;">🟠 Orange ≥50%</span> - Average</li>
+                                <li><span style="color: #943126;">🔴 Red <50%</span> - Needs Improvement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 3 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Student Exam Comparison</h3>
+                        <span class="badge badge-analysis">Analysis</span>
+                    </div>
+                    <p class="report-file">📄 Report_StudentExamComparison.rdl</p>
+                    <p class="report-desc">Question-by-question comparison of student answers against model answers with validation and points tracking.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters (Cascading)</h4>
+                            <ul>
+                                <li><code>@StudentId</code> (Integer) - Selected from dropdown</li>
+                                <li><code>@ExamId</code> (Integer) - Filtered by StudentId</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>StudentList:</strong> SP_Report_GetAllStudents</li>
+                                <li><strong>ExamsByStudent:</strong> SP_Report_GetExamsByStudent</li>
+                                <li><strong>ExamComparison:</strong> SP_Report_StudentExamComparison</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>StudentName</span>
+                                <span>ExamTitle</span>
+                                <span>CourseName</span>
+                                <span>SubmittedAt</span>
+                                <span>QuestionNumber</span>
+                                <span>QuestionText</span>
+                                <span>QuestionType</span>
+                                <span>QuestionPoints</span>
+                                <span>ModelAnswerLetters</span>
+                                <span>ModelAnswerText</span>
+                                <span>StudentAnswerLetter</span>
+                                <span>StudentAnswerText</span>
+                                <span>AnswerStatus</span>
+                                <span>PointsEarned</span>
+                            </div>
+                            
+                            <h4>Answer Status</h4>
+                            <ul>
+                                <li>✅ Correct</li>
+                                <li>❌ Incorrect</li>
+                                <li>⚠️ Unanswered</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 4 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Students by Branch</h3>
+                        <span class="badge badge-org">Organization</span>
+                    </div>
+                    <p class="report-file">📄 Report_StudentsByBranch.rdl</p>
+                    <p class="report-desc">Lists all students enrolled in specific ITI branch with enrollment details and track information.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>@BranchId</code> (Integer) - Selected from dropdown</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>BranchList:</strong> SP_Report_GetAllBranches</li>
+                                <li><strong>StudentsByBranch:</strong> SP_Report_StudentsByBranch</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>StudentName</span>
+                                <span>Gender</span>
+                                <span>EnrollmentDate</span>
+                                <span>TrackName</span>
+                                <span>Status</span>
+                                <span>BranchName</span>
+                                <span>BranchCity</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 5 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Students by Instructor</h3>
+                        <span class="badge badge-org">Organization</span>
+                    </div>
+                    <p class="report-file">📄 Report_StudentsByInstructor.rdl</p>
+                    <p class="report-desc">Shows all students taught by specific instructor, organized by course with enrollment status and grades.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>@InstructorId</code> (Integer) - Selected from dropdown</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>InstructorList:</strong> SP_Report_GetAllInstructors</li>
+                                <li><strong>StudentsByInstructor:</strong> SP_Report_StudentsByInstructor</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>InstructorName</span>
+                                <span>CourseName</span>
+                                <span>StudentName</span>
+                                <span>EnrollmentDate</span>
+                                <span>CourseStatus</span>
+                                <span>FinalGrade</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 6 -->
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3 class="report-title">Topics by Course</h3>
+                        <span class="badge badge-course">Course</span>
+                    </div>
+                    <p class="report-file">📄 Report_TopicsByCourse.rdl</p>
+                    <p class="report-desc">Complete curriculum structure for selected course with all topics in sequential order.</p>
+                    
+                    <div class="report-details">
+                        <button class="details-btn" onclick="toggleDetails(this)">View Details ▼</button>
+                        <div class="details-content">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><code>@CourseId</code> (Integer) - Selected from dropdown</li>
+                            </ul>
+                            
+                            <h4>Datasets</h4>
+                            <ul>
+                                <li><strong>CourseList:</strong> SP_Report_GetAllCourses</li>
+                                <li><strong>TopicsByCourse:</strong> SP_Report_TopicsByCourse</li>
+                            </ul>
+                            
+                            <h4>Output Fields</h4>
+                            <div class="field-list">
+                                <span>CourseName</span>
+                                <span>CourseCode</span>
+                                <span>CourseDescription</span>
+                                <span>DurationDays</span>
+                                <span>TopicName</span>
+                                <span>TopicOrder</span>
+                                <span>IsRequired</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Procedures Section -->
+    <section class="procedures-section" id="procedures">
+        <div class="container">
+            <h2 class="section-title">Stored Procedures Reference</h2>
+            <p class="section-subtitle">12 optimized stored procedures ensuring consistent business logic and optimal performance</p>
+            
+            <div id="proceduresContainer" class="procedures-grid">
+                <!-- Procedures will be loaded dynamically -->
+            </div>
+            
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>🔍 No procedures found</p>
+                <small>Try adjusting your search or filter criteria</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deployment Section -->
+    <section class="deployment-section" id="deployment">
+        <div class="container">
+            <h2 class="section-title">Deployment Guide</h2>
+            
+            <div class="deployment-grid">
+                <div class="deployment-card">
+                    <h3>📋 Prerequisites</h3>
+                    <ul>
+                        <li>SQL Server Reporting Services 2016+</li>
+                        <li>Visual Studio 2022 with SSDT</li>
+                       
+                    </ul>
+                </div>
+
+              
+
+               
+           
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 ITI Examination System. Database Documentation v1.0</p>
+            <p>Built with ❤️ for Information Technology Institute</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
